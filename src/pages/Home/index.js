@@ -114,9 +114,9 @@ class Home extends Component {
                 dataIndex: 'ruleType',
                 key: 'ruleType',
                 align: 'center',
-                filters: [{ text: '重点', value: '重点' }, { text: '有效性', value: '有效性' }],
-                filterMultiple: false,
-                onFilter: (value, record) => record.ruleType.indexOf(value) === 0,
+                // filters: [{ text: '重点', value: '重点' }, { text: '有效性', value: '有效性' }],
+                // filterMultiple: false,
+                // onFilter: (value, record) => record.ruleType.indexOf(value) === 0,
             },
             {
                 title: '规则级别',

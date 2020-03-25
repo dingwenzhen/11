@@ -126,8 +126,7 @@ class Role extends React.Component {
                     <div style={{ height: '40px', backgroundColor: '#fff', lineHeight: '40px', paddingLeft: 10, fontSize: '14px', color: '#333' }}>
                         当前位置：首页-系统管理-角色管理
                     </div>
-                    {
-                        this.state.pageBool ? <div>
+                    <div>
                             <div style={{ marginBottom: '12px', padding: '10px' }}>
 
                                 <Input placeholder="请输入角色" value={this.state.userName} style={{ width: 150, marginLeft: '12px' }} onChange={this.UserNameInput.bind(this)} />
@@ -217,8 +216,7 @@ class Role extends React.Component {
                                         DetermineClick={this.DeletehandleCancel.bind(this)} />
                                 </Modal>
                             </div>
-                        </div> : <BackFirst title={this.state.pagetitle} />
-                    }
+                        </div> 
                 </AdministrationStyle>
             </Fragment>
         )

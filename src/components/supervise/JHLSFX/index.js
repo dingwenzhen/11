@@ -109,7 +109,7 @@ class JHLSFX extends React.Component {
             totalCount: 10,
             SelectList: [],//轮次
             LC: 1,
-            InputValueH: 10,
+            InputValueH: 1,
             DCTCBool: false,//样本导出
             // 下面的事弹窗 --反查
             columns: [],
@@ -141,7 +141,7 @@ class JHLSFX extends React.Component {
         return (
             <Fragment>
                 <div style={{ height: '40px', backgroundColor: '#fff', lineHeight: '40px', paddingLeft: 10, fontSize: '14px', color: '#333' }}>
-                    当前位置：首页-检核历史详情
+                    当前位置：首页-数据检核-检核历史详情
                 </div>
                 <div style={{ padding: '10px' }} className="supervisorTableFY">
                     <div style={{ display: 'flex', justifyContent: "space-between" }}>
@@ -183,7 +183,7 @@ class JHLSFX extends React.Component {
                         <div>
                             <span>总数量：{this.state.countAllData}</span>&nbsp;&nbsp;
                             <span>样本数量（行）</span>
-                            <Input type="text" style={{ width: '120px' }} placeholder={this.state.data.length}
+                            <Input type="text" style={{ width: '120px' }} value={this.state.InputValueH}
                                 onChange={this.ChangeInputValue.bind(this)}
                             />
                             <Button type="primary" onClick={this.DCExcel.bind(this)} style={{ margin: '6px' }}>导出样本</Button>
@@ -387,7 +387,6 @@ class JHLSFX extends React.Component {
                     ruleDesc: ListValueApi.data[1].topdate.ruleDesc
                 })
             } else {
-                // console.log(ListValueApi.data[1].topdate.srcTabNameEn)
                 if (!ListValueApi.data[1].topdate) {
                     ListValueApi.data[1].topdate = {}
                     ListValueApi.data[1].topdate.srcTabNameEn = ''
@@ -409,6 +408,7 @@ class JHLSFX extends React.Component {
         let data = await this.DafaultTime()
         this.setState({
             Detailime: data,
+
         })
         this.DefaultData(data)
     }
@@ -416,16 +416,20 @@ class JHLSFX extends React.Component {
     async DefaultData(val) {
         let data = await DEFAULTDATA(val)
         console.log(data, 'data')
-        if (data.msg == '成功') {
+        if (data.data) {
             this.setState({
                 pageBool: true,
                 data: data.data.list,
                 currPage: data.data.currPage,
                 totalCount: data.data.totalCount,
-                countAllData: data.data.totalCount
+                countAllData: data.data.totalCount,
+                InputValueH:data.data.totalCount
             })
         } else {
-            this.errorModal(data.msg)
+            this.setState({
+                pageBool: false,
+                pagetitle: data.msg
+            })
         }
     }
     async HandlerValue() {
@@ -438,10 +442,11 @@ class JHLSFX extends React.Component {
                 data: data.data.page.list,
                 currPage: data.data.page.currPage,
                 totalCount: data.data.page.totalCount,
-                countAllData: data.data.page.totalCount
+                countAllData: data.data.page.totalCount,
+                InputValueH:data.data.totalCount
             })
         } else {
-            message.error('获取数据失败，请联系管理员')
+            message.error(data.msg)
         }
 
     }
@@ -460,27 +465,23 @@ class JHLSFX extends React.Component {
         obj.Time = await this.DafaultTime()
         obj.sblc = ''
         let DAData = await SUPERVISORVUE(obj)
-        if (DAData.msg == '成功') {
-            this.setState({
-                data: DAData.data.page.list,
-                currPage: DAData.data.page.currPage,
-                totalCount: DAData.data.page.totalCount,
-                FYTime: val,
-                AllButton: 0,
-                CurrentButton: 1,
-                calendarTime: '请选择时间',
-                SelectValue: '',
-                SelectList: [],
-                DafaultValueSelect: '请选择轮次',
-                countAllData: DAData.data.page.totalCount,
-            }, () => {
-                this.forceUpdate()
-                console.log(this.state.SelectList, "list")
-            })
-        }else{
-            message.error('获取数据失败，请联系管理员')
-        }
-
+        this.setState({
+            data: DAData.data.page.list,
+            currPage: DAData.data.page.currPage,
+            totalCount: DAData.data.page.totalCount,
+            FYTime: val,
+            AllButton: 0,
+            CurrentButton: 1,
+            calendarTime: '请选择日期',
+            SelectValue: '',
+            SelectList: [],
+            DafaultValueSelect: '请选择轮次',
+            countAllData: DAData.data.page.totalCount,
+            InputValueH:DAData.data.page.totalCount
+        }, () => {
+            this.forceUpdate()
+            console.log(this.state.SelectList, "list")
+        })
         // this.GetRound(obj)
 
     }
@@ -561,8 +562,12 @@ class JHLSFX extends React.Component {
         if (this.state.calendarTime == '请选择时间') {
             val.cjrq = ''
         } else {
-
-            val.cjrq = this.Time(this.state.calendarTime) //时间
+            let str = ''
+            let Array = this.state.calendarTime.split("-")
+            for (var i = 0; i < Array.length; i++) {
+                str += Array[i]
+            }
+            val.cjrq = str//时间
         }
 
         val.hc = this.state.InputValueH//导出行
@@ -601,12 +606,6 @@ class JHLSFX extends React.Component {
         }
 
     }
-    errorModal(val) {
-        Modal.error({
-         
-          content: val,
-        });
-      }
     error = (val) => {
         message.error(val);
     }
@@ -620,26 +619,34 @@ class JHLSFX extends React.Component {
     // 点击查询，获取日历-轮次
     async QueryData() {
         let queryData = {}
-        if (this.state.calendarTime == '请选择时间') {
-            queryData.Time = ''
+        if (this.state.SelectValue && this.state.calendarTime != '请选择时间') {
+            let str = ''
+            let Array = this.state.calendarTime.split("-")
+            for (var i = 0; i < Array.length; i++) {
+                str += Array[i]
+            }
+            queryData.Time = str
+            // queryData.Time = this.state.calendarTime
+            queryData.LC = this.state.SelectValue
+            queryData.pageNumber = 1
+            console.log(queryData, "queryData")
+            let data = await ALLSINGLE(queryData)
+            if (data.msg == '成功') {
+                this.setState({
+                    data: data.data.page.list,
+                    currPage: data.data.page.currPage,
+                    totalCount: data.data.page.totalCount,
+                    countAllData: data.data.page.totalCount,
+                    AllButton: 0,
+                    InputValueH:data.data.page.totalCount
+                })
+            } else {
+                message.error(data.msg)
+            }
         } else {
-            queryData.Time = this.Time(this.state.calendarTime)
+            message.error('请选择时间跟轮次')
         }
-        queryData.LC = this.state.SelectValue
-        queryData.pageNumber = 1
-        console.log(queryData, "queryData")
-        let data = await ALLSINGLE(queryData)
-        if (data.msg == '成功') {
-            this.setState({
-                data: data.data.page.list,
-                currPage: data.data.page.currPage,
-                totalCount: data.data.page.totalCount,
-                countAllData: data.data.page.totalCount,
-                AllButton: 0
-            })
-        } else {
-            message.error(data.msg)
-        }
+
 
     }
     p(s) {
@@ -648,7 +655,7 @@ class JHLSFX extends React.Component {
     // 反查-导出表格
     async ExportExcel(e) {
         let PopupDataLength = this.state.PopupDataLength
-        if (PopupDataLength[0]) {
+        if(PopupDataLength[0]){
             let obj = {}
             if (this.state.PopupData[0]) {
                 console.log(this.state.PopupData[0])
@@ -681,9 +688,10 @@ class JHLSFX extends React.Component {
                     ReverseChecking: false
                 })
             }
-        } else {
-            message.error('暂无数据，不支持导出数据')
+        }else{
+            message.error('数据暂无，不支持导出数据')
         }
+        
 
     }
     // 数据反查的分页器
@@ -723,14 +731,6 @@ class JHLSFX extends React.Component {
     }
     error = (val) => {
         message.error(val);
-    }
-    Time(val) {
-        let Array = val.split("-")
-        let str = ''
-        for (var i = 0; i < Array.length; i++) {
-            str += Array[i]
-        }
-        return str
     }
 
 }
