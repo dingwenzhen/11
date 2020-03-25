@@ -105,9 +105,9 @@ class Role extends React.Component {
                 ellipsis: true,
                 render: (text, record) => {
                     return <span>
-                        <a onClick={this.EditHandlerValue.bind(this, text, record)}>编辑</ a>
+                        <a onClick={this.EditHandlerValue.bind(this, text, record)}>编辑</a>
                         <Divider type="vertical" />
-                        <a onClick={this.DeleteHandlerValue.bind(this, record)}>删除</ a>
+                        <a onClick={this.DeleteHandlerValue.bind(this, record)}>删除</a>
                     </span>
 
                 },
@@ -126,7 +126,8 @@ class Role extends React.Component {
                     <div style={{ height: '40px', backgroundColor: '#fff', lineHeight: '40px', paddingLeft: 10, fontSize: '14px', color: '#333' }}>
                         当前位置：首页-系统管理-角色管理
                     </div>
-                    <div>
+                    {
+                        this.state.pageBool ? <div>
                             <div style={{ marginBottom: '12px', padding: '10px' }}>
 
                                 <Input placeholder="请输入角色" value={this.state.userName} style={{ width: 150, marginLeft: '12px' }} onChange={this.UserNameInput.bind(this)} />
@@ -216,7 +217,8 @@ class Role extends React.Component {
                                         DetermineClick={this.DeletehandleCancel.bind(this)} />
                                 </Modal>
                             </div>
-                        </div> 
+                        </div> : <BackFirst title={this.state.pagetitle} />
+                    }
                 </AdministrationStyle>
             </Fragment>
         )
@@ -270,7 +272,7 @@ class Role extends React.Component {
     async DafaultdataList(val) {
         console.log(val)
         let data = await PAGELIST(val)
-        if(data.msg == '成功'){
+        if (data.msg == '成功') {
             if (data.data) {
                 this.setState({
                     data: data.data.list,
@@ -284,7 +286,7 @@ class Role extends React.Component {
                     pagetitle: data.msg
                 })
             }
-        }else{
+        } else {
             message.error(data.msg)
         }
     }
@@ -301,7 +303,7 @@ class Role extends React.Component {
                 visible: false
             })
             this.PublicHandler()
-        }else{
+        } else {
             message.error(val)
         }
 
@@ -380,30 +382,25 @@ class Role extends React.Component {
         let selectedRowKeys = this.state.selectedRowKeys
         let str = ''
         let IdList = []
-        if(selectedRowKeys[0] || selectedRowKeys[0] == 0){
-            for (var i = 0; i < DataList.length; i++) {
-                for (var k = 0; k < selectedRowKeys.length; k++) {
-                    if (i == selectedRowKeys[k]) {
-                        IdList.push(DataList[i].id)
-                    }
+        for (var i = 0; i < DataList.length; i++) {
+            for (var k = 0; k < selectedRowKeys.length; k++) {
+                if (i == selectedRowKeys[k]) {
+                    IdList.push(DataList[i].id)
                 }
             }
-            let List = Array.from(new Set(IdList))
-            for (var j = 0; j < List.length; j++) {
-                str += ',' + List[j]
-            }
-            console.log(str)
-            let data = await DELETEROLE(str)
-            if (data.msg == '成功') {
-                this.InspectClick()
-                this.success('删除成功')
-            }else{
-                message.error(data.msg)
-            }
-        }else{
-            message.error('请选择要删除的角色')
         }
-        
+        let List = Array.from(new Set(IdList))
+        for (var j = 0; j < List.length; j++) {
+            str += ',' + List[j]
+        }
+        console.log(str)
+        let data = await DELETEROLE(str)
+        if (data.msg == '成功') {
+            this.InspectClick()
+            this.success('删除成功')
+        } else {
+            message.error(data.msg)
+        }
     }
     // 新增
     NewlyAdded() {
@@ -414,7 +411,7 @@ class Role extends React.Component {
     // 编辑按钮
     async EditHandlerValue(text, record) {
         let data = await EDITDATA(arguments[1].id)
-        
+
         if (data.msg == '成功') {
             this.setState({
                 name: data.data.name,
@@ -470,26 +467,26 @@ class Role extends React.Component {
                 this.InspectClick()
                 this.success('修改成功')
             })
-        }else{
+        } else {
             message.error(data.msg)
         }
     }
     // 区分  xiugai
     RoleInput(val) {
-        console.log(val,444)
+        console.log(val, 444)
         let List = []
         let JurisdictionList = this.state.ModifyData.permissionList
-        console.log(JurisdictionList,'JurisdictionList')
-        for( var i = 0 ; i<JurisdictionList.length ; i++ ){
-            for( var j = 0 ; j<val.length ; j++ ){
-                if(i == val[j] || JurisdictionList[i].name == val[j] ){
+        console.log(JurisdictionList, 'JurisdictionList')
+        for (var i = 0; i < JurisdictionList.length; i++) {
+            for (var j = 0; j < val.length; j++) {
+                if (i == val[j] || JurisdictionList[i].name == val[j]) {
                     List.push(JurisdictionList[i].name)
-                }   
+                }
             }
         }
-        console.log(List,'546')
+        console.log(List, '546')
         List = Array.from(new Set(List))
-        
+
         this.setState({
             RoleList: List
         })

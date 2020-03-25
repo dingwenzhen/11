@@ -152,6 +152,7 @@ class FromOneList extends React.Component {
             })
         } else {
             let data = await NewAddedApi(FromListValue)
+            console.log(data)
             if (data.msg == "成功") {
                 this.setState({
                     ruleSeq: "",

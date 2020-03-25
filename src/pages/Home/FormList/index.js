@@ -10,7 +10,7 @@ class FromList extends React.Component {
             ruleDesc: "",
             srcTabNameCn: "",
             srcTabNameEn: "",
-            dataFieldCode: "",
+            tarColName: "",
             ruleImp: ""
         }
     }
@@ -50,8 +50,8 @@ class FromList extends React.Component {
                 
                
                             <Input type="text" placeholder="请填写目标字段"
-                                value={this.state.dataFieldCode}
-                                onChange={this.dataFieldCodeValue.bind(this)} 
+                                value={this.state.tarColName}
+                                onChange={this.tarColNameValue.bind(this)} 
                                 style={{ width: '150px', display: 'inline-block', margin: '0 10px' }} />
                         
                 
@@ -94,7 +94,7 @@ class FromList extends React.Component {
         // FromObj.ruleDesc = this.state.ruleDesc
         // FromObj.srcTabNameCn = this.state.srcTabNameCn
         // FromObj.srcTabNameEn = this.state.srcTabNameEn
-        // FromObj.dataFieldCode = this.state.dataFieldCode
+        // FromObj.tarColName = this.state.tarColName
         // FromObj.ruleImp = this.state.ruleImp
         this.props.form.validateFields(async (err, values) => {
             console.log(this.state)
@@ -145,7 +145,7 @@ class FromList extends React.Component {
             ruleDesc: "",
             srcTabNameCn: "",
             srcTabNameEn: "",
-            dataFieldCode: "",
+            tarColName: "",
             ruleImp: ""
         },()=>{
             this.props.clearClickValue(this.state)
@@ -153,9 +153,9 @@ class FromList extends React.Component {
         
     }
     // 请填写目标字段
-    dataFieldCodeValue(e) {
+    tarColNameValue(e) {
         this.setState({
-            dataFieldCode: e.target.value
+            tarColName: e.target.value
         })
     }
     // 请填写规则级别
