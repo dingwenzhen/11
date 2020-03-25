@@ -387,7 +387,12 @@ class JHLSFX extends React.Component {
                     ruleDesc: ListValueApi.data[1].topdate.ruleDesc
                 })
             } else {
-                console.log(ListValueApi.data[1].topdate.srcTabNameEn)
+                // console.log(ListValueApi.data[1].topdate.srcTabNameEn)
+                if (!ListValueApi.data[1].topdate) {
+                    ListValueApi.data[1].topdate = {}
+                    ListValueApi.data[1].topdate.srcTabNameEn = ''
+                    ListValueApi.data[1].topdate.ruleDesc = ''
+                }
                 this.setState({
                     ReverseChecking: true,
                     PopupData: [],
@@ -411,7 +416,7 @@ class JHLSFX extends React.Component {
     async DefaultData(val) {
         let data = await DEFAULTDATA(val)
         console.log(data, 'data')
-        if (data.data) {
+        if (data.msg == '成功') {
             this.setState({
                 pageBool: true,
                 data: data.data.list,
@@ -420,10 +425,7 @@ class JHLSFX extends React.Component {
                 countAllData: data.data.totalCount
             })
         } else {
-            this.setState({
-                pageBool: false,
-                pagetitle: data.msg
-            })
+            this.errorModal(data.msg)
         }
     }
     async HandlerValue() {
@@ -439,7 +441,7 @@ class JHLSFX extends React.Component {
                 countAllData: data.data.page.totalCount
             })
         } else {
-            message.error(data.msg)
+            message.error('获取数据失败，请联系管理员')
         }
 
     }
@@ -458,22 +460,27 @@ class JHLSFX extends React.Component {
         obj.Time = await this.DafaultTime()
         obj.sblc = ''
         let DAData = await SUPERVISORVUE(obj)
-        this.setState({
-            data: DAData.data.page.list,
-            currPage: DAData.data.page.currPage,
-            totalCount: DAData.data.page.totalCount,
-            FYTime: val,
-            AllButton: 0,
-            CurrentButton: 1,
-            calendarTime: '请选择时间',
-            SelectValue: '',
-            SelectList: [],
-            DafaultValueSelect: '请选择轮次',
-            countAllData: DAData.data.page.totalCount,
-        }, () => {
-            this.forceUpdate()
-            console.log(this.state.SelectList, "list")
-        })
+        if (DAData.msg == '成功') {
+            this.setState({
+                data: DAData.data.page.list,
+                currPage: DAData.data.page.currPage,
+                totalCount: DAData.data.page.totalCount,
+                FYTime: val,
+                AllButton: 0,
+                CurrentButton: 1,
+                calendarTime: '请选择时间',
+                SelectValue: '',
+                SelectList: [],
+                DafaultValueSelect: '请选择轮次',
+                countAllData: DAData.data.page.totalCount,
+            }, () => {
+                this.forceUpdate()
+                console.log(this.state.SelectList, "list")
+            })
+        }else{
+            message.error('获取数据失败，请联系管理员')
+        }
+
         // this.GetRound(obj)
 
     }
@@ -499,7 +506,7 @@ class JHLSFX extends React.Component {
         })
         this.setState({
             visible: false,
-            calendarTime: FromArr.Time,
+            calendarTime: val,
             SelectList: RQArray
         })
     }
@@ -554,7 +561,8 @@ class JHLSFX extends React.Component {
         if (this.state.calendarTime == '请选择时间') {
             val.cjrq = ''
         } else {
-            val.cjrq = this.state.calendarTime//时间
+
+            val.cjrq = this.Time(this.state.calendarTime) //时间
         }
 
         val.hc = this.state.InputValueH//导出行
@@ -575,24 +583,30 @@ class JHLSFX extends React.Component {
                     'jclc': val.lc,
                     'number': val.hc
                 }
-            }).then(({data}) => {
+            }).then(({ data }) => {
                 console.log(data, '132')
-                if(data.type == 'bin'){
+                if (data.type == 'bin') {
                     const blob = new Blob([data], { type: 'application/vnd.ms-excel;charset=utf-8' })
                     var link = document.createElement('a')
                     link.href = window.URL.createObjectURL(blob)
                     link.download = val.cjrq + '.zip'
                     link.click()
-                }else{
+                } else {
                     message.error('暂无失范数据')
                 }
-                
+
             })
         } else {
             this.error('请您选择时间跟轮次')
         }
 
     }
+    errorModal(val) {
+        Modal.error({
+         
+          content: val,
+        });
+      }
     error = (val) => {
         message.error(val);
     }
@@ -606,12 +620,16 @@ class JHLSFX extends React.Component {
     // 点击查询，获取日历-轮次
     async QueryData() {
         let queryData = {}
-        queryData.Time = this.state.calendarTime
+        if (this.state.calendarTime == '请选择时间') {
+            queryData.Time = ''
+        } else {
+            queryData.Time = this.Time(this.state.calendarTime)
+        }
         queryData.LC = this.state.SelectValue
         queryData.pageNumber = 1
         console.log(queryData, "queryData")
         let data = await ALLSINGLE(queryData)
-        if(data.msg == '成功'){
+        if (data.msg == '成功') {
             this.setState({
                 data: data.data.page.list,
                 currPage: data.data.page.currPage,
@@ -619,10 +637,10 @@ class JHLSFX extends React.Component {
                 countAllData: data.data.page.totalCount,
                 AllButton: 0
             })
-        }else{
+        } else {
             message.error(data.msg)
         }
-        
+
     }
     p(s) {
         return s < 10 ? '0' + s : s
@@ -630,37 +648,41 @@ class JHLSFX extends React.Component {
     // 反查-导出表格
     async ExportExcel(e) {
         let PopupDataLength = this.state.PopupDataLength
-        let obj = {}
-        if (this.state.PopupData[0]) {
-            console.log(this.state.PopupData[0])
-            obj.ruleSeq = this.state.PopupData[0].ruleSeq
-            obj.jclc = this.state.PopupData[0].jclc
-            obj.cjrq = this.state.PopupData[0].cjrq
-            obj.PopupDataLength = PopupDataLength
-            Axios({
-                url: `${window.apiUrl}/review/fc/exportOne`,
-                method: 'get',
-                responseType: 'blob',
-                headers: {
-                    'token': Cookies.get("67ae207794a5fa18fff94e9b62668e5c").split('"')[1]
-                },
-                params: {
-                    'cjrq': obj.cjrq,
-                    'jclc': obj.jclc,
-                    'number': obj.PopupDataLength,
-                    'ruleSeq': obj.ruleSeq
-                }
-            }).then(({ data }) => {
-                console.log(data, '132')
-                const blob = new Blob([data], { type: 'application/vnd.ms-excel;charset=utf-8' })
-                var link = document.createElement('a')
-                link.href = window.URL.createObjectURL(blob)
-                link.download = obj.ruleSeq + '-' + obj.cjrq + '.xls'
-                link.click()
-            })
-            this.setState({
-                ReverseChecking: false
-            })
+        if (PopupDataLength[0]) {
+            let obj = {}
+            if (this.state.PopupData[0]) {
+                console.log(this.state.PopupData[0])
+                obj.ruleSeq = this.state.PopupData[0].ruleSeq
+                obj.jclc = this.state.PopupData[0].jclc
+                obj.cjrq = this.state.PopupData[0].cjrq
+                obj.PopupDataLength = PopupDataLength
+                Axios({
+                    url: `${window.apiUrl}/review/fc/exportOne`,
+                    method: 'get',
+                    responseType: 'blob',
+                    headers: {
+                        'token': Cookies.get("67ae207794a5fa18fff94e9b62668e5c").split('"')[1]
+                    },
+                    params: {
+                        'cjrq': obj.cjrq,
+                        'jclc': obj.jclc,
+                        'number': obj.PopupDataLength,
+                        'ruleSeq': obj.ruleSeq
+                    }
+                }).then(({ data }) => {
+                    console.log(data, '132')
+                    const blob = new Blob([data], { type: 'application/vnd.ms-excel;charset=utf-8' })
+                    var link = document.createElement('a')
+                    link.href = window.URL.createObjectURL(blob)
+                    link.download = obj.ruleSeq + '-' + obj.cjrq + '.xls'
+                    link.click()
+                })
+                this.setState({
+                    ReverseChecking: false
+                })
+            }
+        } else {
+            message.error('暂无数据，不支持导出数据')
         }
 
     }
@@ -701,6 +723,14 @@ class JHLSFX extends React.Component {
     }
     error = (val) => {
         message.error(val);
+    }
+    Time(val) {
+        let Array = val.split("-")
+        let str = ''
+        for (var i = 0; i < Array.length; i++) {
+            str += Array[i]
+        }
+        return str
     }
 
 }

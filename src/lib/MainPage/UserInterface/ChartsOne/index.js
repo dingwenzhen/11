@@ -30,7 +30,6 @@ class ChartsOne extends React.Component {
             parsetint = 1
         } else {
             let ChartsListValue = data.data[0].checkTimesSFSJBLNumbers
-            console.log(ChartsListValue, 'ChartsListValue')
             for (var i = ChartsListValue.length - 1; i >= 0; i--) {
                 let obj = {}
                 if (i < ChartsListValue.length - 1) {
@@ -70,7 +69,7 @@ class ChartsOne extends React.Component {
         });
         chart.legend(false);
         chart.scale('num', {
-            alias: 'TOP 10'
+            alias: '失范数量'
           });
         chart.coord().transpose();
         chart.interval().position('year*num').size(26).opacity(1).color('#1D99FF');
