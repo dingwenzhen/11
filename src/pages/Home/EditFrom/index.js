@@ -17,7 +17,13 @@ class EditFrom extends Component {
     }
     render() {
         console.log(this.props.EditFromList,"88")
-        let { ruleSeq, ruleDesc, srcTabNameCn, srcTabNameEn, dataFieldCode,ruleImp ,standardType,ruleType} = this.props.EditFromList;
+        let { ruleSeq, ruleDesc, srcTabNameCn, srcTabNameEn, tarColName,ruleImp ,standardType,ruleType} = this.props.EditFromList;
+        console.log(ruleSeq)
+        console.log(ruleDesc)
+        console.log(srcTabNameCn)
+        console.log(tarColName)
+        console.log(ruleImp)
+
         const { getFieldDecorator } = this.props.form;
         return (
             <Form labelCol={{
@@ -75,8 +81,8 @@ class EditFrom extends Component {
                 </Form.Item>
                 <Form.Item label="目标字段">
                     {
-                        getFieldDecorator("dataFieldCode", {
-                            initialValue: dataFieldCode,
+                        getFieldDecorator("tarColName", {
+                            initialValue: tarColName,
                         })(
                             <Input
                                 type="text"
@@ -131,20 +137,21 @@ class EditFrom extends Component {
         this.props.form.validateFields( async (err, values) => {
             if (!err) {
                 let FromList = {}
-               
                 FromList.id=this.cloumns.EditFromList.id
                 FromList.ruleSeq=values.ruleSeq
                 FromList.ruleDesc=values.ruleDesc
                 FromList.srcTabNameCn=values.srcTabNameCn
                 FromList.srcTabNameEn=values.srcTabNameEn
-                FromList.dataFieldCode=values.dataFieldCode
+                FromList.tarColName=values.tarColName
                 FromList.ruleType=values.ruleType
                 FromList.ruleImp=values.ruleImp
                 FromList.standardType=values.standardType
                 console.log(FromList,99)
                 let UpdateFromList = await UpdaterulesApi(FromList)
+                console.log(UpdateFromList)
                 if(UpdateFromList.msg=="成功"){
                     this.props.EditHandler(FromList)
+                    // this.
                 }else{
                     message.error(UpdateFromList.msg)
                 }

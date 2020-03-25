@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from "react"
-import { Table, Button, Divider, Form, Pagination, message, Modal } from 'antd';
-import { booksListApi, DeteteValueApi, conditionApi } from "@api/index"
+import { Table, Button, Divider, Form, Pagination, message, Modal, Input } from 'antd';
+import { booksListApi, DeteteValueApi, conditionApi, UpdaterulesApi } from "@api/index"
 import { HomeStyled } from "./styled"
 import FromList from "./FormList/index"
 import EditFrom from "./EditFrom/index"
@@ -46,7 +46,15 @@ class Home extends Component {
                 ruleDesc: "",
                 srcTabNameCn: "",
                 srcTabNameEn: "",
-                dataFieldCode: "",
+                tarColName: "",
+                ruleImp: ""
+            },
+            modifyData:{
+                ruleSeq: "",
+                ruleDesc: "",
+                srcTabNameCn: "",
+                srcTabNameEn: "",
+                tarColName: "",
                 ruleImp: ""
             }
         }
@@ -101,11 +109,11 @@ class Home extends Component {
             },
             {
                 title: '目标字段',
-                dataIndex: 'dataFieldCode',
-                key: 'dataFieldCode',
+                dataIndex: 'tarColName',
+                key: 'tarColName',
                 align: 'center',
                 filteredValue: filteredInfo.address || null,
-                sortOrder: sortedInfo.columnKey === 'dataFieldCode' && sortedInfo.order,
+                sortOrder: sortedInfo.columnKey === 'tarColName' && sortedInfo.order,
                 ellipsis: true,
             },
             {
@@ -114,9 +122,9 @@ class Home extends Component {
                 dataIndex: 'ruleType',
                 key: 'ruleType',
                 align: 'center',
-                // filters: [{ text: '重点', value: '重点' }, { text: '有效性', value: '有效性' }],
-                // filterMultiple: false,
-                // onFilter: (value, record) => record.ruleType.indexOf(value) === 0,
+                filters: [{ text: '重点', value: '重点' }, { text: '有效性', value: '有效性' }],
+                filterMultiple: false,
+                onFilter: (value, record) => record.ruleType.indexOf(value) === 0,
             },
             {
                 title: '规则级别',
@@ -156,23 +164,23 @@ class Home extends Component {
                 render: (text, record) => {
                     if (record.standardType == "自有") {
                         return <span>
-                            <a onClick={this.EditHandlerValue.bind(this, text, record)}>编辑</ a>
+                            <a onClick={this.EditHandlerValue.bind(this, text, record)}>编辑</a>
                             <Divider type="vertical" />
-                            <a onClick={this.AbolishHandlerValue.bind(this, record)}>废除</ a>
+                            <a onClick={this.AbolishHandlerValue.bind(this, record)}>废除</a>
                             <Divider type="vertical" />
-                            <a onClick={this.DeleteHandlerValue.bind(this, record)}>删除</ a>
+                            <a onClick={this.DeleteHandlerValue.bind(this, record)}>删除</a>
                         </span>
                     } else {
                         return <span>
                             <a onClick={this.EditHandlerValue.bind(this, text, record)}
                                 style={{ color: '#f1f1f1', pointerEvents: 'none' }}
-                            >编辑</ a>
+                            >编辑</a>
                             <Divider type="vertical" />
                             <a onClick={this.AbolishHandlerValue.bind(this, record)}
                                 style={{ color: '#f1f1f1', pointerEvents: 'none' }}
-                            >废除</ a>
+                            >废除</a>
                             <Divider type="vertical" />
-                            <a onClick={this.DeleteHandlerValue.bind(this, record)}>删除</ a>
+                            <a onClick={this.DeleteHandlerValue.bind(this, record)}>删除</a>
                         </span>
                     }
                 },
@@ -215,12 +223,102 @@ class Home extends Component {
                 </div>
                 <div>
                     <Modal
-                        title="Basic Modal"
+                        title="编辑规则"
                         visible={this.state.visible}
                         onOk={this.handleOk.bind(this)}
                         onCancel={this.handleCancel.bind(this)}
                     >
-                        <EditFrom EditFromList={this.state.EditFromValue} EditHandler={this.CancelHandler.bind(this)}></EditFrom>
+                        {/* <EditFrom EditFromList={this.state.EditFromValue} EditHandler={this.CancelHandler.bind(this)}></EditFrom> */}
+                        <div>
+                            <span>规则号：</span>
+                            <Input
+                                value={this.state.modifyData.ruleSeq}
+                                type="text"
+                                style={{ width: '200px', marginLeft: '15px' }}
+                                onChange={this.ruleSeqChange.bind(this)}
+
+                            />
+                        </div>
+                        <br></br>
+                        <div>
+                            <span>规则描述：</span>
+                            <Input
+                                value={this.state.modifyData.ruleDesc}
+                                type="text"
+                                style={{ width: '200px' }}
+                                onChange={this.ruleDescChange.bind(this)}
+
+                            />
+                        </div>
+                        <br></br>
+                        <div>
+                            <span>中文表名：</span>
+                            <Input
+                                value={this.state.modifyData.srcTabNameCn}
+                                type="text"
+                                style={{ width: '200px' }}
+                                onChange={this.srcTabNameCnChange.bind(this)}
+
+                            />
+                        </div>
+                        <br></br>
+                        <div>
+                            <span>英文表名：</span>
+                            <Input
+                                value={this.state.modifyData.srcTabNameEn}
+                                type="text"
+                                style={{ width: '200px' }}
+                                onChange={this.srcTabNameEnChange.bind(this)}
+
+                            />
+                        </div>
+                        <br></br>
+                        <div>
+                            <span>目标字段：</span>
+                            <Input
+                                value={this.state.modifyData.tarColName}
+                                type="text"
+                                style={{ width: '200px' }}
+                                onChange={this.tarColNameChange.bind(this)}
+
+                            />
+                        </div>
+                        <br></br>
+                        <div>
+                            <span>规则类型：</span>
+                            <Input
+                                value={this.state.modifyData.ruleType}
+                                type="text"
+                                style={{ width: '200px' }}
+                                onChange={this.ruleTypeChange.bind(this)}
+
+                            />
+                        </div>
+                        <br></br>
+                        <div>
+                            <span>规则级别：</span>
+                            <Input
+                                value={this.state.modifyData.ruleImp}
+                                type="text"
+                                style={{ width: '200px' }}
+                                onChange={this.ruleImpChange.bind(this)}
+
+                            />
+                        </div>
+                        <br></br>
+                        <div>
+                            <span>标准类型：</span>
+                            <Input
+                                value={this.state.modifyData.standardType}
+                                type="text"
+                                style={{ width: '200px' }}
+                                onChange={this.standardTypeChange.bind(this)}
+
+                            />
+                        </div>
+                        <br></br>
+                        <Button type="primary" onClick={this.handleSubmit.bind(this)}>修改</Button>
+
                     </Modal>
                 </div>
 
@@ -286,9 +384,109 @@ class Home extends Component {
                         <Button onClick={this.handleCancel.bind(this)}>取消</Button>
                     </Modal>
                 </div>
-            </Fragment >
+            </Fragment>
 
         )
+    }
+    // 规则号
+    ruleSeqChange(e) {
+        let modifyData = this.state.modifyData
+        modifyData.ruleSeq = e.target.value
+        this.setState({
+            modifyData
+        })
+    }
+    // 规则描述
+    ruleDescChange(e) {
+        let modifyData = this.state.modifyData
+        modifyData.ruleDesc = e.target.value
+        this.setState({
+            modifyData
+        })
+    }
+    // 中文表名
+    srcTabNameCnChange(e) {
+        let modifyData = this.state.modifyData
+        modifyData.srcTabNameCn = e.target.value
+        this.setState({
+            modifyData
+        })
+    }
+    // 英文表名
+    srcTabNameEnChange(e) {
+        let modifyData = this.state.modifyData
+        modifyData.srcTabNameEn = e.target.value
+        this.setState({
+            modifyData
+        })
+    }
+    // 目标字段
+    tarColNameChange(e) {
+        let modifyData = this.state.modifyData
+        modifyData.tarColName = e.target.value
+        this.setState({
+            modifyData
+        })
+    }
+    // 规则类型
+    ruleTypeChange(e) {
+        let modifyData = this.state.modifyData
+        modifyData.ruleType = e.target.value
+        this.setState({
+            modifyData
+        })
+    }
+    // 规则级别
+    ruleImpChange(e) {
+        let modifyData = this.state.modifyData
+        modifyData.ruleImp = e.target.value
+        this.setState({
+            modifyData
+        })
+    }
+    // 标准类型
+    standardTypeChange(e) {
+        let modifyData = this.state.modifyData
+        modifyData.standardType = e.target.value
+        this.setState({
+            modifyData
+        })
+    }
+
+    //修改数据
+    async handleSubmit() {
+        // handleSubmit(e) {
+            // e.preventDefault();
+        //获取到所有表单的数据
+        // this.props.form.validateFields(async (err, values) => {
+        //     if (!err) {
+        //         let FromList = {}
+        //         FromList.id = this.cloumns.EditFromList.id
+        //         FromList.ruleSeq = values.ruleSeq
+        //         FromList.ruleDesc = values.ruleDesc
+        //         FromList.srcTabNameCn = values.srcTabNameCn
+        //         FromList.srcTabNameEn = values.srcTabNameEn
+        //         FromList.tarColName = values.tarColName
+        //         FromList.ruleType = values.ruleType
+        //         FromList.ruleImp = values.ruleImp
+        //         FromList.standardType = values.standardType
+        //         console.log(FromList, 99)
+        let obj = this.state.modifyData
+        let Update = await UpdaterulesApi(obj)
+        console.log(Update)
+        if (Update.msg == "成功") {
+            // this.props.EditHandler(FromList)
+            this.setState({
+                visible:false,
+                page:1
+            },()=>{
+                message.success(Update.msg)
+                this.queryPageData()
+            })
+            
+        } else {
+            message.error(Update.msg)
+        }
     }
     // 提示用户不能删除非自有
     TSBUSCx() {
@@ -306,7 +504,7 @@ class Home extends Component {
         if (data.msg == "成功") {
             this.queryPageData()
             this.success(data.msg)
-        }else{
+        } else {
             message.error(data.msg)
         }
         this.setState({
@@ -370,7 +568,7 @@ class Home extends Component {
         if (data.msg == '成功') {
             this.queryPageData()
             this.success(data.msg)
-        }else{
+        } else {
             message.error(data.msg)
         }
     }
@@ -434,7 +632,9 @@ class Home extends Component {
     }
     // 编辑
     EditHandlerValue(text, record) {
+        console.log(record)
         this.setState({
+            modifyData: { ...record },
             visible: true,
             EditFromValue: record
         })
@@ -541,7 +741,7 @@ class Home extends Component {
             data: data.data.list,
             currPage: data.data.currPage,
             totalCount: data.data.totalCount,
-            FromList: FromList
+            // FromList: FromList
         }, () => {
             console.log(this.state.currPage)
         })

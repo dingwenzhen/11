@@ -109,7 +109,7 @@ class JHLSFX extends React.Component {
             totalCount: 10,
             SelectList: [],//轮次
             LC: 1,
-            InputValueH: 1,
+            InputValueH: 10,
             DCTCBool: false,//样本导出
             // 下面的事弹窗 --反查
             columns: [],
@@ -141,7 +141,7 @@ class JHLSFX extends React.Component {
         return (
             <Fragment>
                 <div style={{ height: '40px', backgroundColor: '#fff', lineHeight: '40px', paddingLeft: 10, fontSize: '14px', color: '#333' }}>
-                    当前位置：首页-数据检核-检核历史详情
+                    当前位置：首页-检核历史详情
                 </div>
                 <div style={{ padding: '10px' }} className="supervisorTableFY">
                     <div style={{ display: 'flex', justifyContent: "space-between" }}>
@@ -183,7 +183,7 @@ class JHLSFX extends React.Component {
                         <div>
                             <span>总数量：{this.state.countAllData}</span>&nbsp;&nbsp;
                             <span>样本数量（行）</span>
-                            <Input type="text" style={{ width: '120px' }} value={this.state.InputValueH}
+                            <Input type="text" style={{ width: '120px' }} placeholder={this.state.data.length}
                                 onChange={this.ChangeInputValue.bind(this)}
                             />
                             <Button type="primary" onClick={this.DCExcel.bind(this)} style={{ margin: '6px' }}>导出样本</Button>
@@ -387,11 +387,7 @@ class JHLSFX extends React.Component {
                     ruleDesc: ListValueApi.data[1].topdate.ruleDesc
                 })
             } else {
-                if (!ListValueApi.data[1].topdate) {
-                    ListValueApi.data[1].topdate = {}
-                    ListValueApi.data[1].topdate.srcTabNameEn = ''
-                    ListValueApi.data[1].topdate.ruleDesc = ''
-                }
+                console.log(ListValueApi.data[1].topdate.srcTabNameEn)
                 this.setState({
                     ReverseChecking: true,
                     PopupData: [],
@@ -408,7 +404,6 @@ class JHLSFX extends React.Component {
         let data = await this.DafaultTime()
         this.setState({
             Detailime: data,
-
         })
         this.DefaultData(data)
     }
@@ -422,8 +417,7 @@ class JHLSFX extends React.Component {
                 data: data.data.list,
                 currPage: data.data.currPage,
                 totalCount: data.data.totalCount,
-                countAllData: data.data.totalCount,
-                InputValueH:data.data.totalCount
+                countAllData: data.data.totalCount
             })
         } else {
             this.setState({
@@ -442,8 +436,7 @@ class JHLSFX extends React.Component {
                 data: data.data.page.list,
                 currPage: data.data.page.currPage,
                 totalCount: data.data.page.totalCount,
-                countAllData: data.data.page.totalCount,
-                InputValueH:data.data.totalCount
+                countAllData: data.data.page.totalCount
             })
         } else {
             message.error(data.msg)
@@ -472,12 +465,11 @@ class JHLSFX extends React.Component {
             FYTime: val,
             AllButton: 0,
             CurrentButton: 1,
-            calendarTime: '请选择日期',
+            calendarTime: '请选择时间',
             SelectValue: '',
             SelectList: [],
             DafaultValueSelect: '请选择轮次',
             countAllData: DAData.data.page.totalCount,
-            InputValueH:DAData.data.page.totalCount
         }, () => {
             this.forceUpdate()
             console.log(this.state.SelectList, "list")
@@ -507,7 +499,7 @@ class JHLSFX extends React.Component {
         })
         this.setState({
             visible: false,
-            calendarTime: val,
+            calendarTime: FromArr.Time,
             SelectList: RQArray
         })
     }
@@ -562,12 +554,7 @@ class JHLSFX extends React.Component {
         if (this.state.calendarTime == '请选择时间') {
             val.cjrq = ''
         } else {
-            let str = ''
-            let Array = this.state.calendarTime.split("-")
-            for (var i = 0; i < Array.length; i++) {
-                str += Array[i]
-            }
-            val.cjrq = str//时间
+            val.cjrq = this.state.calendarTime//时间
         }
 
         val.hc = this.state.InputValueH//导出行
@@ -588,18 +575,18 @@ class JHLSFX extends React.Component {
                     'jclc': val.lc,
                     'number': val.hc
                 }
-            }).then(({ data }) => {
+            }).then(({data}) => {
                 console.log(data, '132')
-                if (data.type == 'bin') {
+                if(data.type == 'bin'){
                     const blob = new Blob([data], { type: 'application/vnd.ms-excel;charset=utf-8' })
                     var link = document.createElement('a')
                     link.href = window.URL.createObjectURL(blob)
                     link.download = val.cjrq + '.zip'
                     link.click()
-                } else {
+                }else{
                     message.error('暂无失范数据')
                 }
-
+                
             })
         } else {
             this.error('请您选择时间跟轮次')
@@ -619,35 +606,23 @@ class JHLSFX extends React.Component {
     // 点击查询，获取日历-轮次
     async QueryData() {
         let queryData = {}
-        if (this.state.SelectValue && this.state.calendarTime != '请选择时间') {
-            let str = ''
-            let Array = this.state.calendarTime.split("-")
-            for (var i = 0; i < Array.length; i++) {
-                str += Array[i]
-            }
-            queryData.Time = str
-            // queryData.Time = this.state.calendarTime
-            queryData.LC = this.state.SelectValue
-            queryData.pageNumber = 1
-            console.log(queryData, "queryData")
-            let data = await ALLSINGLE(queryData)
-            if (data.msg == '成功') {
-                this.setState({
-                    data: data.data.page.list,
-                    currPage: data.data.page.currPage,
-                    totalCount: data.data.page.totalCount,
-                    countAllData: data.data.page.totalCount,
-                    AllButton: 0,
-                    InputValueH:data.data.page.totalCount
-                })
-            } else {
-                message.error(data.msg)
-            }
-        } else {
-            message.error('请选择时间跟轮次')
+        queryData.Time = this.state.calendarTime
+        queryData.LC = this.state.SelectValue
+        queryData.pageNumber = 1
+        console.log(queryData, "queryData")
+        let data = await ALLSINGLE(queryData)
+        if(data.msg == '成功'){
+            this.setState({
+                data: data.data.page.list,
+                currPage: data.data.page.currPage,
+                totalCount: data.data.page.totalCount,
+                countAllData: data.data.page.totalCount,
+                AllButton: 0
+            })
+        }else{
+            message.error(data.msg)
         }
-
-
+        
     }
     p(s) {
         return s < 10 ? '0' + s : s
@@ -655,43 +630,38 @@ class JHLSFX extends React.Component {
     // 反查-导出表格
     async ExportExcel(e) {
         let PopupDataLength = this.state.PopupDataLength
-        if(PopupDataLength[0]){
-            let obj = {}
-            if (this.state.PopupData[0]) {
-                console.log(this.state.PopupData[0])
-                obj.ruleSeq = this.state.PopupData[0].ruleSeq
-                obj.jclc = this.state.PopupData[0].jclc
-                obj.cjrq = this.state.PopupData[0].cjrq
-                obj.PopupDataLength = PopupDataLength
-                Axios({
-                    url: `${window.apiUrl}/review/fc/exportOne`,
-                    method: 'get',
-                    responseType: 'blob',
-                    headers: {
-                        'token': Cookies.get("67ae207794a5fa18fff94e9b62668e5c").split('"')[1]
-                    },
-                    params: {
-                        'cjrq': obj.cjrq,
-                        'jclc': obj.jclc,
-                        'number': obj.PopupDataLength,
-                        'ruleSeq': obj.ruleSeq
-                    }
-                }).then(({ data }) => {
-                    console.log(data, '132')
-                    const blob = new Blob([data], { type: 'application/vnd.ms-excel;charset=utf-8' })
-                    var link = document.createElement('a')
-                    link.href = window.URL.createObjectURL(blob)
-                    link.download = obj.ruleSeq + '-' + obj.cjrq + '.xls'
-                    link.click()
-                })
-                this.setState({
-                    ReverseChecking: false
-                })
-            }
-        }else{
-            message.error('数据暂无，不支持导出数据')
+        let obj = {}
+        if (this.state.PopupData[0]) {
+            console.log(this.state.PopupData[0])
+            obj.ruleSeq = this.state.PopupData[0].ruleSeq
+            obj.jclc = this.state.PopupData[0].jclc
+            obj.cjrq = this.state.PopupData[0].cjrq
+            obj.PopupDataLength = PopupDataLength
+            Axios({
+                url: `${window.apiUrl}/review/fc/exportOne`,
+                method: 'get',
+                responseType: 'blob',
+                headers: {
+                    'token': Cookies.get("67ae207794a5fa18fff94e9b62668e5c").split('"')[1]
+                },
+                params: {
+                    'cjrq': obj.cjrq,
+                    'jclc': obj.jclc,
+                    'number': obj.PopupDataLength,
+                    'ruleSeq': obj.ruleSeq
+                }
+            }).then(({ data }) => {
+                console.log(data, '132')
+                const blob = new Blob([data], { type: 'application/vnd.ms-excel;charset=utf-8' })
+                var link = document.createElement('a')
+                link.href = window.URL.createObjectURL(blob)
+                link.download = obj.ruleSeq + '-' + obj.cjrq + '.xls'
+                link.click()
+            })
+            this.setState({
+                ReverseChecking: false
+            })
         }
-        
 
     }
     // 数据反查的分页器

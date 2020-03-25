@@ -31,8 +31,8 @@ class SBAdministration extends React.Component {
             pageBool: false,
             TableList: [],
             page: 1,
-            selectedRowKeys: [],
-            SelectValue: ''
+            selectedRowKeys: []
+
         }
     }
     render() {
@@ -184,8 +184,8 @@ class SBAdministration extends React.Component {
                                 </Card>
                             </Col>
                         </Row>
-                        <Button style={{ marginTop: '20px' }} type='primary' onClick={this.uploadListClick.bind(this)}>上传</Button>
-                        <Button style={{ marginLeft: '20px' }} type='primary' onClick={this.OverlayMultiple.bind(this)}>覆盖</Button>
+                        <Button style={{marginTop:'20px'}} type='primary' onClick={this.uploadListClick.bind(this)}>上传</Button>
+                        <Button style={{marginLeft:'20px'}} type='primary' onClick={this.OverlayMultiple.bind(this)}>覆盖</Button>
                         <Table columns={columns} dataSource={this.state.TableList}
                             rowSelection={rowSelection}
                             pagination={{ pageSize: 50 }} scroll={{ y: 240 }}
@@ -234,11 +234,11 @@ class SBAdministration extends React.Component {
         this.setState({ selectedRowKeys });
     }
     // 上传多个
-    uploadListClick() {
+    uploadListClick(){
         this.transmission(false)
     }
     // 覆盖多个
-    OverlayMultiple() {
+    OverlayMultiple(){
         this.transmission(true)
     }
     //   上传+覆盖多个
@@ -560,37 +560,29 @@ class SBAdministration extends React.Component {
     async QueryData() {
         let _this = this
         let queryData = {}
-        let Time
-        if (this.state.calendarTime == '请选择时间') {
-            message.error('请选择时间')
-        } else if (!this.state.SelectValue) {
-            message.error('请选择轮次')
-        } else {
-            Time = this.state.calendarTime
-            let Array = Time.split("-")
-            console.log(Array)
-            let str = ""
-            for (var i = 0; i < Array.length; i++) {
-                str += Array[i]
-            }
-
-            queryData.Time = str
-            queryData.SelectValue = this.state.SelectValue
-            let LCTime = await LCTIME(queryData)
-            if (LCTime.msg == '成功') {
-                this.setState({
-                    totalJCSJZL: _this.formatNum(LCTime.data[0].totalJCSJZL),
-                    totalRuleSeq: _this.formatNum(LCTime.data[0].totalRuleSeq),
-                    totalSFSJBL: LCTime.data[0].totalSFSJBL,
-                    totalSFSJZL: _this.formatNum(LCTime.data[0].totalSFSJZL),
-                    dcdatasum: LCTime.data[0].totalJCSJZL,
-                    TableList: LCTime.data[0].wjjhjlbs
-                })
-            } else {
-                message.error(LCTime.msg)
-            }
+        let Time = this.state.calendarTime
+        let Array = Time.split("-")
+        console.log(Array)
+        let str = ""
+        for (var i = 0; i < Array.length; i++) {
+            str += Array[i]
         }
 
+        queryData.Time = str
+        queryData.SelectValue = this.state.SelectValue
+        let LCTime = await LCTIME(queryData)
+        if (LCTime.msg == '成功') {
+            this.setState({
+                totalJCSJZL: _this.formatNum(LCTime.data[0].totalJCSJZL),
+                totalRuleSeq: _this.formatNum(LCTime.data[0].totalRuleSeq),
+                totalSFSJBL: LCTime.data[0].totalSFSJBL,
+                totalSFSJZL: _this.formatNum(LCTime.data[0].totalSFSJZL),
+                dcdatasum: LCTime.data[0].totalJCSJZL,
+                TableList: LCTime.data[0].wjjhjlbs
+            })
+        } else {
+            message.error(LCTime.msg)
+        }
 
     }
     formatNum(num) {
