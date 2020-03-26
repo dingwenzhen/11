@@ -128,8 +128,8 @@ class Home extends Component {
             },
             {
                 title: '规则级别',
-                dataIndex: 'ruleImp',
-                key: 'ruleImp',
+                dataIndex: 'level',
+                key: 'level',
                 align: 'center',
             },
             {
@@ -269,7 +269,6 @@ class Home extends Component {
                                 type="text"
                                 style={{ width: '200px' }}
                                 onChange={this.srcTabNameEnChange.bind(this)}
-
                             />
                         </div>
                         <br></br>
@@ -280,7 +279,6 @@ class Home extends Component {
                                 type="text"
                                 style={{ width: '200px' }}
                                 onChange={this.tarColNameChange.bind(this)}
-
                             />
                         </div>
                         <br></br>
@@ -291,7 +289,6 @@ class Home extends Component {
                                 type="text"
                                 style={{ width: '200px' }}
                                 onChange={this.ruleTypeChange.bind(this)}
-
                             />
                         </div>
                         <br></br>
@@ -302,7 +299,6 @@ class Home extends Component {
                                 type="text"
                                 style={{ width: '200px' }}
                                 onChange={this.ruleImpChange.bind(this)}
-
                             />
                         </div>
                         <br></br>
