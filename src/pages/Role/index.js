@@ -380,27 +380,32 @@ class Role extends React.Component {
     async DeleteClick() {
         let DataList = this.state.data
         let selectedRowKeys = this.state.selectedRowKeys
-        let str = ''
-        let IdList = []
-        for (var i = 0; i < DataList.length; i++) {
-            for (var k = 0; k < selectedRowKeys.length; k++) {
-                if (i == selectedRowKeys[k]) {
-                    IdList.push(DataList[i].id)
+        if(selectedRowKeys[0]){
+            let str = ''
+            let IdList = []
+            for (var i = 0; i < DataList.length; i++) {
+                for (var k = 0; k < selectedRowKeys.length; k++) {
+                    if (i == selectedRowKeys[k]) {
+                        IdList.push(DataList[i].id)
+                    }
                 }
             }
+            let List = Array.from(new Set(IdList))
+            for (var j = 0; j < List.length; j++) {
+                str += ',' + List[j]
+            }
+            console.log(str)
+            let data = await DELETEROLE(str)
+            if (data.msg == '成功') {
+                this.InspectClick()
+                this.success('删除成功')
+            } else {
+                message.error(data.msg)
+            }
+        }else{
+            message.error('请选择您要删除的角色')
         }
-        let List = Array.from(new Set(IdList))
-        for (var j = 0; j < List.length; j++) {
-            str += ',' + List[j]
-        }
-        console.log(str)
-        let data = await DELETEROLE(str)
-        if (data.msg == '成功') {
-            this.InspectClick()
-            this.success('删除成功')
-        } else {
-            message.error(data.msg)
-        }
+        
     }
     // 新增
     NewlyAdded() {
