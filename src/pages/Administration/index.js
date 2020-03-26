@@ -40,8 +40,8 @@ class Administration extends React.Component {
             RoleListArray: [],
             id: '',
             pageBool: false,
-            pagetitle:'',
-            EditUserName:''
+            pagetitle: '',
+            EditUserName: ''
         }
     }
     start = () => {
@@ -128,115 +128,115 @@ class Administration extends React.Component {
         ];
         return (
             <Fragment >
-            <AdministrationStyle className="AdministrationStyle">
-                            <div style={{ height: '40px', backgroundColor: '#fff', lineHeight: '40px', paddingLeft: 10, fontSize: '14px', color: '#333' }}>
-                                当前位置：首页-系统管理-用户管理
+                <AdministrationStyle className="AdministrationStyle">
+                    <div style={{ height: '40px', backgroundColor: '#fff', lineHeight: '40px', paddingLeft: 10, fontSize: '14px', color: '#333' }}>
+                        当前位置：首页-系统管理-用户管理
                             </div>
-                            <div style={{ marginBottom: '12px', padding: '10px' }}>
-                                <Input placeholder="请输入账号" value={this.state.User} style={{ width: 150, marginLeft: '12px' }} onChange={this.UserInput.bind(this)} />
-                                <Input placeholder="请输入姓名" value={this.state.UserName} style={{ width: 150, marginLeft: '12px' }} onChange={this.UserNameInput.bind(this)} />
-                                <Input placeholder="请输入邮箱" value={this.state.Email} style={{ width: 150, marginLeft: '12px' }} onChange={this.EmailInput.bind(this)} />
-                                <Input placeholder="请输入电话" value={this.state.Telephone} style={{ width: 150, marginLeft: '12px' }} onChange={this.TelephoneInput.bind(this)} />
-                                <Button type="primary" style={{ margin: ' 0 6px' }} onClick={this.InspectClick.bind(this)}>查询</Button>
-                                <Button type="primary" style={{ margin: ' 0 6px' }} onClick={this.RestClick.bind(this)}>重置</Button>
-                                <Button type="primary" style={{ margin: ' 0 6px' }} onClick={this.NewlyAdded.bind(this)}>新增</Button>
-                                <Button type="primary" style={{ margin: ' 0 6px' }} onClick={this.DeleteClick.bind(this)}>删除</Button>
-                            </div>
+                    <div style={{ marginBottom: '12px', padding: '10px' }}>
+                        <Input placeholder="请输入账号" value={this.state.User} style={{ width: 150, marginLeft: '12px' }} onChange={this.UserInput.bind(this)} />
+                        <Input placeholder="请输入姓名" value={this.state.UserName} style={{ width: 150, marginLeft: '12px' }} onChange={this.UserNameInput.bind(this)} />
+                        <Input placeholder="请输入邮箱" value={this.state.Email} style={{ width: 150, marginLeft: '12px' }} onChange={this.EmailInput.bind(this)} />
+                        <Input placeholder="请输入电话" value={this.state.Telephone} style={{ width: 150, marginLeft: '12px' }} onChange={this.TelephoneInput.bind(this)} />
+                        <Button type="primary" style={{ margin: ' 0 6px' }} onClick={this.InspectClick.bind(this)}>查询</Button>
+                        <Button type="primary" style={{ margin: ' 0 6px' }} onClick={this.RestClick.bind(this)}>重置</Button>
+                        <Button type="primary" style={{ margin: ' 0 6px' }} onClick={this.NewlyAdded.bind(this)}>新增</Button>
+                        <Button type="primary" style={{ margin: ' 0 6px' }} onClick={this.DeleteClick.bind(this)}>删除</Button>
+                    </div>
 
-                            <div style={{ backgroundColor: "#FFFFFF", padding: "10px" }}>
-                                <Table rowSelection={rowSelection} columns={columns} dataSource={this.state.data} onChange={this.onChange.bind(this)} />
-                            </div>
-                            <div className='User' style={{ padding: '10px 0', backgroundColor: '#fff' }}>
-                                <Pagination showQuickJumper current={this.state.page} total={this.state.totalCount} onChange={this.Pagination.bind(this)} />
-                            </div>
-                            <div >
-                                <Modal
-                                    title="新增用户"
-                                    visible={this.state.visible}
-                                    onOk={this.handleOk.bind(this)}
-                                    confirmLoading={this.state.confirmLoading}
-                                    onCancel={this.handleCancel.bind(this)}
+                    <div style={{ backgroundColor: "#FFFFFF", padding: "10px" }}>
+                        <Table rowSelection={rowSelection} columns={columns} dataSource={this.state.data} onChange={this.onChange.bind(this)} />
+                    </div>
+                    <div className='User' style={{ padding: '10px 0', backgroundColor: '#fff' }}>
+                        <Pagination showQuickJumper current={this.state.page} total={this.state.totalCount} onChange={this.Pagination.bind(this)} />
+                    </div>
+                    <div >
+                        <Modal
+                            title="新增用户"
+                            visible={this.state.visible}
+                            onOk={this.handleOk.bind(this)}
+                            confirmLoading={this.state.confirmLoading}
+                            onCancel={this.handleCancel.bind(this)}
+                        >
+                            <Fromlist
+                                CancelClick={this.CancelClick.bind(this)}
+                                DetermineClick={this.DetermineClick.bind(this)}
+                            ></Fromlist>
+                        </Modal>
+                        <Modal
+                            title="修改用户资料"
+                            visible={this.state.ModifyBool}
+                            onOk={this.handleOk.bind(this)}
+                            onCancel={this.handleCancel.bind(this)}
+                        >
+                            <label style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center' }} >
+                                <span>角色</span>
+                                <Select
+                                    mode="multiple"
+                                    style={{ width: '400px' }}
+                                    placeholder="请选择角色"
+                                    value={this.state.RoleListArray}
+                                    onChange={this.ModifyDataRoleInput.bind(this)}
                                 >
-                                    <Fromlist
-                                        CancelClick={this.CancelClick.bind(this)}
-                                        DetermineClick={this.DetermineClick.bind(this)}
-                                    ></Fromlist>
-                                </Modal>
-                                <Modal
-                                    title="修改用户资料"
-                                    visible={this.state.ModifyBool}
-                                    onOk={this.handleOk.bind(this)}
-                                    onCancel={this.handleCancel.bind(this)}
-                                >
-                                    <label style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center' }} >
-                                        <span>角色</span>
-                                        <Select
-                                            mode="multiple"
-                                            style={{ width: '400px' }}
-                                            placeholder="请选择角色"
-                                            value={this.state.RoleListArray}
-                                            onChange={this.ModifyDataRoleInput.bind(this)}
-                                        >
-                                            {
-                                                this.state.roleList.map((item, index) => {
-                                                    return <Option key={index}>{item.name}</Option>
-                                                })
-                                            }
-                                        </Select>
-                                    </label>
-                                    <br></br>
-                                    <label style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center' }} >
-                                        <span>账号</span>
-                                        <Input type="text"
-                                            required="required"
-                                            value={this.state.ModifyDatausername}
-                                            style={{ width: '400px', height: '45px' }}
-                                            onChange={this.ModifyDataUserInput.bind(this)} />
-                                    </label>
-                                    <br></br>
-                                    <label style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center' }} >
-                                        <span>姓名</span>
-                                        <Input type="text"
-                                            value={this.state.ModifyDataname}
-                                            style={{ width: '400px', height: '45px' }}
-                                            onChange={this.ModifyDataUserNameInput.bind(this)} />
-                                    </label>
-                                    <br></br>
-                                    <label style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center' }} >
-                                        <span>邮箱</span>
-                                        <Input type="text"
-                                            value={this.state.ModifyDataemail}
-                                            style={{ width: '400px', height: '45px' }}
-                                            onChange={this.ModifyDataEmailInput.bind(this)} />
-                                    </label>
-                                    <br></br>
-                                    <label style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center' }} >
-                                        <span>电话</span>
-                                        <Input type="text"
-                                            value={this.state.ModifyDataphone}
-                                            style={{ width: '400px', height: '45px' }}
-                                            onChange={this.ModifyDataTelephoneInput.bind(this)} />
-                                    </label>
-                                    <br></br>
-                                    <div>
-                                        <Button type="primary" onClick={this.ModifyDataDetermineClick.bind(this)}>确定</Button>
-                                        <Button style={{ marginLeft: '20px' }} onClick={this.CancelClick.bind(this)}>取消</Button>
-                                    </div>
-                                </Modal>
-                                <Modal
-                                    title="删除用户"
-                                    visible={this.state.DeleteBool}
-                                    onOk={this.handleOk.bind(this)}
-                                    onCancel={this.handleCancel.bind(this)}
-                                >
-                                    <DeleteUser
-                                        CancelClick={this.handleOk.bind(this)}
-                                        ModifyData={this.state.ModifyData}
-                                        DetermineClick={this.DeletehandleCancel.bind(this)} />
-                                </Modal>
+                                    {
+                                        this.state.roleList.map((item, index) => {
+                                            return <Option key={index}>{item.name}</Option>
+                                        })
+                                    }
+                                </Select>
+                            </label>
+                            <br></br>
+                            <label style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center' }} >
+                                <span>账号</span>
+                                <Input type="text"
+                                    required="required"
+                                    value={this.state.ModifyDatausername}
+                                    style={{ width: '400px', height: '45px' }}
+                                    onChange={this.ModifyDataUserInput.bind(this)} />
+                            </label>
+                            <br></br>
+                            <label style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center' }} >
+                                <span>姓名</span>
+                                <Input type="text"
+                                    value={this.state.ModifyDataname}
+                                    style={{ width: '400px', height: '45px' }}
+                                    onChange={this.ModifyDataUserNameInput.bind(this)} />
+                            </label>
+                            <br></br>
+                            <label style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center' }} >
+                                <span>邮箱</span>
+                                <Input type="text"
+                                    value={this.state.ModifyDataemail}
+                                    style={{ width: '400px', height: '45px' }}
+                                    onChange={this.ModifyDataEmailInput.bind(this)} />
+                            </label>
+                            <br></br>
+                            <label style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center' }} >
+                                <span>电话</span>
+                                <Input type="text"
+                                    value={this.state.ModifyDataphone}
+                                    style={{ width: '400px', height: '45px' }}
+                                    onChange={this.ModifyDataTelephoneInput.bind(this)} />
+                            </label>
+                            <br></br>
+                            <div>
+                                <Button type="primary" onClick={this.ModifyDataDetermineClick.bind(this)}>确定</Button>
+                                <Button style={{ marginLeft: '20px' }} onClick={this.CancelClick.bind(this)}>取消</Button>
                             </div>
+                        </Modal>
+                        <Modal
+                            title="删除用户"
+                            visible={this.state.DeleteBool}
+                            onOk={this.handleOk.bind(this)}
+                            onCancel={this.handleCancel.bind(this)}
+                        >
+                            <DeleteUser
+                                CancelClick={this.handleOk.bind(this)}
+                                ModifyData={this.state.ModifyData}
+                                DetermineClick={this.DeletehandleCancel.bind(this)} />
+                        </Modal>
+                    </div>
 
-                        </AdministrationStyle> 
+                </AdministrationStyle>
             </Fragment>
         )
     }
@@ -289,8 +289,8 @@ class Administration extends React.Component {
         } else {
             this.setState({
                 pageBool: false,
-                pagetitle:data.msg
-            },()=>{
+                pagetitle: data.msg
+            }, () => {
                 console.log(this.state.pagetitle)
             })
         }
@@ -347,7 +347,7 @@ class Administration extends React.Component {
                 this.DafaultdataList(FromInformation)
                 this.success('删除成功')
             })
-        }else{
+        } else {
             this.error(data.msg)
         }
     }
@@ -400,28 +400,33 @@ class Administration extends React.Component {
     async DeleteClick() {
         let DataList = this.state.data
         let selectedRowKeys = this.state.selectedRowKeys
-        let str = ''
-        let IdList = []
-        for (var i = 0; i < DataList.length; i++) {
-            for (var k = 0; k < selectedRowKeys.length; k++) {
-                if (i == selectedRowKeys[k]) {
-                    IdList.push(DataList[i].id)
+        if (selectedRowKeys[0] || selectedRowKeys[0] == 0) {
+            let str = ''
+            let IdList = []
+            for (var i = 0; i < DataList.length; i++) {
+                for (var k = 0; k < selectedRowKeys.length; k++) {
+                    if (i == selectedRowKeys[k]) {
+                        IdList.push(DataList[i].id)
+                    }
                 }
             }
-        }
-        let List = Array.from(new Set(IdList))
-        for (var j = 0; j < List.length; j++) {
-            str += ',' + List[j]
-        }
-        console.log(str)
-        let data = await DELETEONE(str)
-        console.log(data, '删除返回的')
-        if (data.msg == '成功') {
-            this.InspectClick()
-            this.success('删除成功')
+            let List = Array.from(new Set(IdList))
+            for (var j = 0; j < List.length; j++) {
+                str += ',' + List[j]
+            }
+            console.log(str)
+            let data = await DELETEONE(str)
+            console.log(data, '删除返回的')
+            if (data.msg == '成功') {
+                this.InspectClick()
+                this.success('删除成功')
+            } else {
+                this.error(data.msg)
+            }
         }else{
-            this.error(data.msg)
+            message.error('请选择您要删除的用户')
         }
+
     }
     // 新增
     NewlyAdded() {
@@ -433,8 +438,8 @@ class Administration extends React.Component {
     async EditHandlerValue(text, record) {
         console.log(arguments[1].id, '修改后的id')
         let data = await TRANSMISSIONID(arguments[1].id)
-        console.log(data.data,'点击编辑获取用户信息')
-        if(data.msg == '成功'){
+        console.log(data.data, '点击编辑获取用户信息')
+        if (data.msg == '成功') {
             let Array = []
             if (data.data.chickRoleList) {
                 for (var i = 0; i < data.data.chickRoleList.length; i++) {
@@ -450,12 +455,12 @@ class Administration extends React.Component {
                 RoleListArray: Array,
                 roleList: data.data.roleList,
                 id: arguments[1].id,
-                EditUserName:data.data.username
+                EditUserName: data.data.username
             })
-        }else{
+        } else {
             message.error(data.msg)
         }
-        
+
     }
     // 查看按钮
     AbolishHandlerValue() {
@@ -493,7 +498,7 @@ class Administration extends React.Component {
             }, () => {
                 this.success('修改成功')
             })
-        }else{
+        } else {
             message.error(data.msg)
         }
     }
@@ -501,9 +506,9 @@ class Administration extends React.Component {
     ModifyDataRoleInput(val) {
         let roleList = this.state.roleList
         let List = []
-        for( var i = 0 ; i<roleList.length ; i++ ){
-            for( var j = 0 ; j<val.length ; j++ ){
-                if(val[j] ==roleList[i].name || val[j]==i ){
+        for (var i = 0; i < roleList.length; i++) {
+            for (var j = 0; j < val.length; j++) {
+                if (val[j] == roleList[i].name || val[j] == i) {
                     List.push(roleList[i].name)
                 }
             }
@@ -538,7 +543,7 @@ class Administration extends React.Component {
                 Array.push(idList[i].id)
             }
         }
-        console.log(Array,'Array')
+        console.log(Array, 'Array')
         FromData.id = this.state.id
         FromData.roleIds = Array
         FromData.username = this.state.ModifyDatausername

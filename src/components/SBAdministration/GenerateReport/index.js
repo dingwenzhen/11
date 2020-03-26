@@ -31,8 +31,8 @@ class SBAdministration extends React.Component {
             pageBool: false,
             TableList: [],
             page: 1,
-            selectedRowKeys: []
-
+            selectedRowKeys: [],
+            SelectValue: ''
         }
     }
     render() {
@@ -184,8 +184,8 @@ class SBAdministration extends React.Component {
                                 </Card>
                             </Col>
                         </Row>
-                        <Button style={{marginTop:'20px'}} type='primary' onClick={this.uploadListClick.bind(this)}>上传</Button>
-                        <Button style={{marginLeft:'20px'}} type='primary' onClick={this.OverlayMultiple.bind(this)}>覆盖</Button>
+                        <Button style={{ marginTop: '20px' }} type='primary' onClick={this.uploadListClick.bind(this)}>上传</Button>
+                        <Button style={{ marginLeft: '20px' }} type='primary' onClick={this.OverlayMultiple.bind(this)}>覆盖</Button>
                         <Table columns={columns} dataSource={this.state.TableList}
                             rowSelection={rowSelection}
                             pagination={{ pageSize: 50 }} scroll={{ y: 240 }}
@@ -234,28 +234,32 @@ class SBAdministration extends React.Component {
         this.setState({ selectedRowKeys });
     }
     // 上传多个
-    uploadListClick(){
-        this.transmission(false)
+    uploadListClick() {
+        this.transmission(false, '请选择您要上传的数据')
     }
     // 覆盖多个
-    OverlayMultiple(){
-        this.transmission(true)
+    OverlayMultiple() {
+        this.transmission(true, '请选择您要覆盖的数据')
     }
     //   上传+覆盖多个
-    transmission(val) {
+    transmission(val, text) {
         let data = this.state.selectedRowKeys
-        let TableList = this.state.TableList
-        let arr = []
-        for (var i = 0; i < data.length; i++) {
-            for (var j = 0; j < TableList.length; j++) {
-                if (data[i] == j) {
-                    arr.push(TableList[j].papersName)
+        if (data[0] || data[0] == 0) {
+            let TableList = this.state.TableList
+            let arr = []
+            for (var i = 0; i < data.length; i++) {
+                for (var j = 0; j < TableList.length; j++) {
+                    if (data[i] == j) {
+                        arr.push(TableList[j].papersName)
+                    }
                 }
             }
+            let List = { arry: arr, bool: val }
+            this.statusDafault(List)
+        } else {
+            message.error(text)
         }
-        let List = { arry: arr, bool: val }
 
-        this.statusDafault(List)
     }
 
     // uploadFailClick 重新上传
@@ -330,7 +334,6 @@ class SBAdministration extends React.Component {
         this.setState({
             SelectValue: value
         })
-        console.log(`selected ${value}`);
     }
     // 请选择导出数量
     DCSumInput(e) {
@@ -489,32 +492,36 @@ class SBAdministration extends React.Component {
         TxTData.cjrq = str
         TxTData.jclc = this.state.SelectValue
         TxTData.number = this.state.dcdatasum
+
         console.log(TxTData)
         if (TxTData.cjrq != '请选择时间' && TxTData.jclc && TxTData.number >= 0) {
-            Axios({
-                url: `${window.apiUrl}/review/Appear/inTheNewspapersLeadingOut`,
-                method: 'get',
-                responseType: 'blob',
-                headers: {
-                    'token': Cookies.get("67ae207794a5fa18fff94e9b62668e5c").split('"')[1]
-                },
-                params: {
-                    'cjrq': TxTData.cjrq,
-                    'jclc': TxTData.jclc,
-                    'number': TxTData.number
-                }
-            }).then(({ data }) => {
-                console.log(data, '132')
-                const blob = new Blob([data], { type: 'application/vnd.ms-excel;charset=utf-8' })
-                var link = document.createElement('a')
-                link.href = window.URL.createObjectURL(blob)
-                link.download = TxTData.cjrq + '.zip'
-                link.click()
-            })
+            if (this.state.totalSFSJZL == 0) {
+                message.error('失范数据暂无，不支持导出样本')
+            } else {
+                Axios({
+                    url: `${window.apiUrl}/review/Appear/inTheNewspapersLeadingOut`,
+                    method: 'get',
+                    responseType: 'blob',
+                    headers: {
+                        'token': Cookies.get("67ae207794a5fa18fff94e9b62668e5c").split('"')[1]
+                    },
+                    params: {
+                        'cjrq': TxTData.cjrq,
+                        'jclc': TxTData.jclc,
+                        'number': TxTData.number
+                    }
+                }).then(({ data }) => {
+                    console.log(data, '132')
+                    const blob = new Blob([data], { type: 'application/vnd.ms-excel;charset=utf-8' })
+                    var link = document.createElement('a')
+                    link.href = window.URL.createObjectURL(blob)
+                    link.download = TxTData.cjrq + '.zip'
+                    link.click()
+                })
+            }
         } else {
-            this.error()
+            this.error('请选择时间跟轮次')
         }
-
     }
     // 关闭数据反查弹框
     CloseClick() {
@@ -527,33 +534,38 @@ class SBAdministration extends React.Component {
         let _this = this
         let queryData = {}
         let Time = this.state.calendarTime
-        let Array = Time.split("-")
-        console.log(Array)
-        let str = ""
-        for (var i = 0; i < Array.length; i++) {
-            str += Array[i]
-        }
-        queryData.Time = str
-        queryData.SelectValue = this.state.SelectValue
-        Axios({
-            url: `${window.apiUrl}/review/Appear/exportFileNameReport`,
-            method: 'get',
-            responseType: 'blob',
-            headers: {
-                'token': Cookies.get("67ae207794a5fa18fff94e9b62668e5c").split('"')[1]
-            },
-            params: {
-                'cjrq': queryData.Time,
-                'jclc': queryData.SelectValue
+        if (Time == '请选择时间') {
+            message.error('请选择时间')
+        } else {
+            let Array = Time.split("-")
+            console.log(Array)
+            let str = ""
+            for (var i = 0; i < Array.length; i++) {
+                str += Array[i]
             }
-        }).then(({ data }) => {
-            console.log(data, '132')
-            const blob = new Blob([data], { type: 'application/vnd.ms-excel;charset=utf-8' })
-            var link = document.createElement('a')
-            link.href = window.URL.createObjectURL(blob)
-            link.download = queryData.Time + '.excel'
-            link.click()
-        })
+            queryData.Time = str
+            queryData.SelectValue = this.state.SelectValue
+            Axios({
+                url: `${window.apiUrl}/review/Appear/exportFileNameReport`,
+                method: 'get',
+                responseType: 'blob',
+                headers: {
+                    'token': Cookies.get("67ae207794a5fa18fff94e9b62668e5c").split('"')[1]
+                },
+                params: {
+                    'cjrq': queryData.Time,
+                    'jclc': queryData.SelectValue
+                }
+            }).then(({ data }) => {
+                console.log(data, '132')
+                const blob = new Blob([data], { type: 'application/vnd.ms-excel;charset=utf-8' })
+                var link = document.createElement('a')
+                link.href = window.URL.createObjectURL(blob)
+                link.download = queryData.Time + '.xls'
+                link.click()
+            })
+        }
+
 
     }
     // 点击生成报告，获取日历-轮次
@@ -561,28 +573,33 @@ class SBAdministration extends React.Component {
         let _this = this
         let queryData = {}
         let Time = this.state.calendarTime
-        let Array = Time.split("-")
-        console.log(Array)
-        let str = ""
-        for (var i = 0; i < Array.length; i++) {
-            str += Array[i]
+        if (this.state.calendarTime == '请选择时间') {
+            message.error('请您选择时间')
+        } else {
+            let Array = Time.split("-")
+            console.log(Array)
+            let str = ""
+            for (var i = 0; i < Array.length; i++) {
+                str += Array[i]
+            }
+
+            queryData.Time = str
+            queryData.SelectValue = this.state.SelectValue
+            let LCTime = await LCTIME(queryData)
+            if (LCTime.msg == '成功') {
+                this.setState({
+                    totalJCSJZL: _this.formatNum(LCTime.data[0].totalJCSJZL),
+                    totalRuleSeq: _this.formatNum(LCTime.data[0].totalRuleSeq),
+                    totalSFSJBL: LCTime.data[0].totalSFSJBL,
+                    totalSFSJZL: _this.formatNum(LCTime.data[0].totalSFSJZL),
+                    dcdatasum: LCTime.data[0].totalSFSJZL,
+                    TableList: LCTime.data[0].wjjhjlbs
+                })
+            } else {
+                message.error(LCTime.msg)
+            }
         }
 
-        queryData.Time = str
-        queryData.SelectValue = this.state.SelectValue
-        let LCTime = await LCTIME(queryData)
-        if (LCTime.msg == '成功') {
-            this.setState({
-                totalJCSJZL: _this.formatNum(LCTime.data[0].totalJCSJZL),
-                totalRuleSeq: _this.formatNum(LCTime.data[0].totalRuleSeq),
-                totalSFSJBL: LCTime.data[0].totalSFSJBL,
-                totalSFSJZL: _this.formatNum(LCTime.data[0].totalSFSJZL),
-                dcdatasum: LCTime.data[0].totalJCSJZL,
-                TableList: LCTime.data[0].wjjhjlbs
-            })
-        } else {
-            message.error(LCTime.msg)
-        }
 
     }
     formatNum(num) {

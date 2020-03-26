@@ -353,6 +353,16 @@ class TableList extends React.Component {
                 BankjgdmBool: true//银行机构代码布尔值
 
             })
+        }else{
+            this.setState({
+                selectListBool: false,
+                cacelBool: true,
+                RouteBool: false,
+                AreaCodeBool: false,//区域代码
+                DataBaseBool: false,//数据库的布尔值
+                BankjgdmBool: false//银行机构代码布尔值
+            })
+            console.log('拥有日历的')
         }
 
     }

@@ -49,7 +49,7 @@ class Home extends Component {
                 tarColName: "",
                 ruleImp: ""
             },
-            modifyData:{
+            modifyData: {
             }
         }
     }
@@ -112,13 +112,13 @@ class Home extends Component {
             },
             {
                 title: '规则类型',
-                locale: { filterConfirm: '确定', filterReset: '重置' },
+                // locale: { filterConfirm: '确定', filterReset: '重置' },
                 dataIndex: 'ruleType',
                 key: 'ruleType',
                 align: 'center',
-                filters: [{ text: '重点', value: '重点' }, { text: '有效性', value: '有效性' }],
-                filterMultiple: false,
-                onFilter: (value, record) => record.ruleType.indexOf(value) === 0,
+                // filters: [{ text: '重点', value: '重点' }, { text: '有效性', value: '有效性' }],
+                // filterMultiple: false,
+                // onFilter: (value, record) => record.ruleType.indexOf(value) === 0,
             },
             {
                 title: '规则级别',
@@ -223,88 +223,95 @@ class Home extends Component {
                         onCancel={this.handleCancel.bind(this)}
                     >
                         {/* <EditFrom EditFromList={this.state.EditFromValue} EditHandler={this.CancelHandler.bind(this)}></EditFrom> */}
-                        <div>
-                            <span>规则号：</span>
-                            <Input
-                                value={this.state.modifyData.ruleSeq}
-                                type="text"
-                                style={{ width: '200px', marginLeft: '15px' }}
-                                onChange={this.ruleSeqChange.bind(this)}
+                        <div style={{ display: 'flex' }}>
+                            <div style={{ width: '270px' }}>
+                                <span>规则号：</span>
+                                <Input
+                                    value={this.state.modifyData.ruleSeq}
+                                    type="text"
+                                    style={{ width: '200px' }}
+                                    onChange={this.ruleSeqChange.bind(this)}
 
-                            />
-                        </div>
-                        <br></br>
-                        <div>
-                            <span>规则描述：</span>
-                            <Input
-                                value={this.state.modifyData.ruleDesc}
-                                type="text"
-                                style={{ width: '200px' }}
-                                onChange={this.ruleDescChange.bind(this)}
+                                />
+                            </div>
+                            <div>
+                                <span>规则描述：</span>
+                                <Input
+                                    value={this.state.modifyData.ruleDesc}
+                                    type="text"
+                                    style={{ width: '200px' }}
+                                    onChange={this.ruleDescChange.bind(this)}
 
-                            />
+                                />
+                            </div>
                         </div>
                         <br></br>
-                        <div>
-                            <span>中文表名：</span>
-                            <Input
-                                value={this.state.modifyData.srcTabNameCn}
-                                type="text"
-                                style={{ width: '200px' }}
-                                onChange={this.srcTabNameCnChange.bind(this)}
+                        <div style={{ display: 'flex' }}>
+                            <div>
+                                <span>中文表名：</span>
+                                <Input
+                                    value={this.state.modifyData.srcTabNameCn}
+                                    type="text"
+                                    style={{ width: '200px' }}
+                                    onChange={this.srcTabNameCnChange.bind(this)}
 
-                            />
+                                />
+                            </div>
+                            <br></br>
+                            <div>
+                                <span>英文表名：</span>
+                                <Input
+                                    value={this.state.modifyData.srcTabNameEn}
+                                    type="text"
+                                    style={{ width: '200px' }}
+                                    onChange={this.srcTabNameEnChange.bind(this)}
+                                />
+                            </div>
                         </div>
                         <br></br>
-                        <div>
-                            <span>英文表名：</span>
-                            <Input
-                                value={this.state.modifyData.srcTabNameEn}
-                                type="text"
-                                style={{ width: '200px' }}
-                                onChange={this.srcTabNameEnChange.bind(this)}
-                            />
+                        <div style={{ display: 'flex' }}>
+                            <div>
+                                <span>目标字段：</span>
+                                <Input
+                                    value={this.state.modifyData.tarColName}
+                                    type="text"
+                                    style={{ width: '200px' }}
+                                    onChange={this.tarColNameChange.bind(this)}
+                                />
+                            </div>
+                            <br></br>
+                            <div>
+                                <span>规则类型：</span>
+                                <Input
+                                    value={this.state.modifyData.ruleType}
+                                    type="text"
+                                    style={{ width: '200px' }}
+                                    onChange={this.ruleTypeChange.bind(this)}
+                                />
+                            </div>
                         </div>
                         <br></br>
-                        <div>
-                            <span>目标字段：</span>
-                            <Input
-                                value={this.state.modifyData.tarColName}
-                                type="text"
-                                style={{ width: '200px' }}
-                                onChange={this.tarColNameChange.bind(this)}
-                            />
-                        </div>
-                        <br></br>
-                        <div>
-                            <span>规则类型：</span>
-                            <Input
-                                value={this.state.modifyData.ruleType}
-                                type="text"
-                                style={{ width: '200px' }}
-                                onChange={this.ruleTypeChange.bind(this)}
-                            />
-                        </div>
-                        <br></br>
-                        <div>
-                            <span>规则级别：</span>
-                            <Input
-                                value={this.state.modifyData.level}
-                                type="text"
-                                style={{ width: '200px' }}
-                                onChange={this.ruleImpChange.bind(this)}
-                            />
-                        </div>
-                        <br></br>
-                        <div>
-                            <span>标准类型：</span>
-                            <Input
-                                value={this.state.modifyData.standardType}
-                                type="text"
-                                style={{ width: '200px' }}
-                                onChange={this.standardTypeChange.bind(this)}
+                        <div style={{ display: 'flex' }}>
+                            <div>
+                                <span>规则级别：</span>
+                                <Input
+                                    value={this.state.modifyData.level}
+                                    type="text"
+                                    style={{ width: '200px' }}
+                                    onChange={this.ruleImpChange.bind(this)}
+                                />
+                            </div>
+                            <br></br>
+                            <div>
+                                <span>标准类型：</span>
+                                <Input
+                                    value={this.state.modifyData.standardType}
+                                    type="text"
+                                    style={{ width: '200px' }}
+                                    onChange={this.standardTypeChange.bind(this)}
 
-                            />
+                                />
+                            </div>
                         </div>
                         <br></br>
                         <Button type="primary" onClick={this.handleSubmit.bind(this)}>修改</Button>
@@ -446,7 +453,7 @@ class Home extends Component {
     //修改数据
     async handleSubmit() {
         // handleSubmit(e) {
-            // e.preventDefault();
+        // e.preventDefault();
         //获取到所有表单的数据
         // this.props.form.validateFields(async (err, values) => {
         //     if (!err) {
@@ -467,13 +474,13 @@ class Home extends Component {
         if (Update.msg == "成功") {
             // this.props.EditHandler(FromList)
             this.setState({
-                visible:false,
-                page:1
-            },()=>{
+                visible: false,
+                page: 1
+            }, () => {
                 message.success(Update.msg)
                 this.queryPageData()
             })
-            
+
         } else {
             message.error(Update.msg)
         }
@@ -545,22 +552,27 @@ class Home extends Component {
     async ArrayDelete() {
         console.log(this.state.selectedRowKeys)
         let selectedRowKeys = this.state.selectedRowKeys
-        let DeleteFrom = this.state.data
-        let DeleteId = []
-        for (var i = 0; i < selectedRowKeys.length; i++) {
-            let index = selectedRowKeys[i]
-            DeleteId.push(DeleteFrom[index].id)
-        }
-        console.log(DeleteId, "DeleteId")
+        if (selectedRowKeys[0] || selectedRowKeys[0] == 0) {
+            let DeleteFrom = this.state.data
+            let DeleteId = []
+            for (var i = 0; i < selectedRowKeys.length; i++) {
+                let index = selectedRowKeys[i]
+                DeleteId.push(DeleteFrom[index].id)
+            }
+            console.log(DeleteId, "DeleteId")
 
-        // console.log(DeleteIndex,"buhao")
-        let data = await DeteteValueApi(DeleteId)
-        if (data.msg == '成功') {
-            this.queryPageData()
-            this.success(data.msg)
+            // console.log(DeleteIndex,"buhao")
+            let data = await DeteteValueApi(DeleteId)
+            if (data.msg == '成功') {
+                this.queryPageData()
+                this.success(data.msg)
+            } else {
+                message.error(data.msg)
+            }
         } else {
-            message.error(data.msg)
+            message.error('请选择您要删除的规则')
         }
+
     }
     async HandlerValue() {
         let data = await booksListApi()

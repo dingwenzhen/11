@@ -40,28 +40,7 @@ class FromOneList extends React.Component {
                         </Select>
                     </label>
                 </div>
-                <div style={{ display: 'flex', width: "100%", justifyContent: 'space-between', marginBottom: '5px' }}>
-
-                    <label>
-                        <span style={{ marginBottom: '5px', display: 'inline-block' }}>请选择重要性</span>
-                        <Select defaultValue={this.state.ruleImp}
-                            style={{ width: 200 }}
-                            onChange={this.LevelhandleChange.bind(this)}>
-                            <Option value="关键">关键</Option>
-                            <Option value="可选">可选</Option>
-                            <Option value="一般">一般</Option>
-                        </Select>
-                    </label>
-
-                    <label>
-                        <span style={{ marginBottom: '5px', display: 'inline-block' }}>中文表名</span>
-                        <Input type="text"
-                            placeholder="请填写中文表名"
-                            style={{ width: '200px' }}
-                            value={this.state.srcTabNameCn}
-                            onChange={this.srcTabNameCnInput.bind(this)} />
-                    </label>
-                </div>
+              
                 <div style={{ display: 'flex', width: "100%", justifyContent: 'space-between', marginBottom: '5px' }}>
                     <label>
                         <span style={{ marginBottom: '5px', display: 'inline-block' }}>请输入英文表名</span>
@@ -101,6 +80,16 @@ class FromOneList extends React.Component {
                     </label>
 
                 </div>
+                <div style={{ display: 'flex', width: "100%", justifyContent: 'space-between', marginBottom: '5px' }}>
+                <label>
+                    <span style={{ marginBottom: '5px', display: 'block' }}>中文表名</span>
+                    <Input type="text"
+                        placeholder="请填写中文表名"
+                        style={{ width: '200px' }}
+                        value={this.state.srcTabNameCn}
+                        onChange={this.srcTabNameCnInput.bind(this)} />
+                </label>
+            </div>
                 <div>
                     <Button block type="primary"
                         onClick={this.FromListOne.bind(this)}
@@ -139,7 +128,7 @@ class FromOneList extends React.Component {
         let FromListValue = {}
         FromListValue.ruleSeq = this.state.ruleSeq
         FromListValue.ruleType = this.state.ruleType
-        FromListValue.ruleImp = this.state.ruleImp
+        // FromListValue.ruleImp = this.state.ruleImp
         FromListValue.srcTabNameCn = this.state.srcTabNameCn
         FromListValue.srcTabNameEn = this.state.srcTabNameEn
         FromListValue.gzVersion = this.state.gzVersion
@@ -164,6 +153,7 @@ class FromOneList extends React.Component {
                     diySql: "",
                     ruleDesc: ""
                 })
+                message.success('添加成功')
                 this.props.DetermineClick()
             }else{
                 message.error(data.msg)
