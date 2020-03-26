@@ -517,7 +517,7 @@ class JHLSFX extends React.Component {
     QBClickhandler() {
         this.setState({
             FYTime: '',
-            calendarTime: '请选择日期',
+            calendarTime: '请选择时间',
             SelectList: [],
             Detailime: '',
             SelectValue: '',
@@ -667,6 +667,8 @@ class JHLSFX extends React.Component {
             this.setState({
                 ReverseChecking: false
             })
+        }else{
+            message.error('数据暂无，不支持导出数据')
         }
 
     }
@@ -694,15 +696,20 @@ class JHLSFX extends React.Component {
             this.error('请选择轮次')
         } else {
             let queryData = {}
-            queryData.Time = this.state.calendarTime
+            queryData.Time = this.Time(this.state.calendarTime)
             queryData.LC = this.state.SelectValue
             let data = await GeneratingChartsApi(queryData)
             console.log(data)
-            let name = this.$encryptionData('jhjglsList')
-            let value = this.$encryptionData(JSON.stringify(data))
-            localStorage.setItem(name, JSON.stringify(value))
-            // let jhjglsList = this.$encryptionData
-            this.props.history.push('/DataChecking/GeneratingCharts')
+            if(data.msg == '成功'){
+                let name = this.$encryptionData('jhjglsList')
+                let value = this.$encryptionData(JSON.stringify(data))
+                localStorage.setItem(name, JSON.stringify(value))
+                // let jhjglsList = this.$encryptionData
+                this.props.history.push('/DataChecking/GeneratingCharts')
+            }else{
+                message.error(data.msg)
+            }
+           
         }
     }
     error = (val) => {

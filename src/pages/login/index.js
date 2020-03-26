@@ -65,7 +65,7 @@ class Login extends Component {
         console.log(Login, 88989)
         if (Login.msg == '成功') {
             Cookies.set(`${Login.data.token}`, JSON.stringify(Login.data.value), { expires: 0.1 })
-            this.props.history.push("/DataChecking/UserInterface")
+            this.props.history.push("/DataChecking/FileManagement")
         } else {
             this.error(Login.msg)
         }

@@ -14,7 +14,7 @@ export const conditionApi = (val) => http.get(`${window.apiUrl}/review/rules/Sea
     'srcTabNameCn': val.srcTabNameCn,
     'srcTabNameEn': val.srcTabNameEn,
     'tarColName': val.tarColName,
-    'ruleImp': val.ruleImp,
+    'level': val.ruleImp,
     'page':val.page
 })
 // 修改
@@ -33,7 +33,7 @@ export const UpdaterulesApi = ({ ...val }) => http.post(`${window.apiUrl}/review
 export const NewAddedApi = (val) => http.post(`${window.apiUrl}/review/rules/AddRules`, {
     'ruleSeq': val.ruleSeq,
     'ruleType': val.ruleType,
-    'ruleImp': val.ruleImp,
+    // 'level': val.ruleImp,
     'srcTabNameCn': val.srcTabNameCn,
     'srcTabNameEn': val.srcTabNameEn,
     'gzVersion': val.gzVersion,
