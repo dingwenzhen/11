@@ -499,7 +499,7 @@ class JHLSFX extends React.Component {
         })
         this.setState({
             visible: false,
-            calendarTime: FromArr.Time,
+            calendarTime: val,
             SelectList: RQArray
         })
     }
@@ -554,7 +554,8 @@ class JHLSFX extends React.Component {
         if (this.state.calendarTime == '请选择时间') {
             val.cjrq = ''
         } else {
-            val.cjrq = this.state.calendarTime//时间
+            val.cjrq = this.Time(this.state.calendarTime)
+            //时间
         }
 
         val.hc = this.state.InputValueH//导出行
@@ -606,22 +607,27 @@ class JHLSFX extends React.Component {
     // 点击查询，获取日历-轮次
     async QueryData() {
         let queryData = {}
-        queryData.Time = this.state.calendarTime
-        queryData.LC = this.state.SelectValue
-        queryData.pageNumber = 1
-        console.log(queryData, "queryData")
-        let data = await ALLSINGLE(queryData)
-        if(data.msg == '成功'){
-            this.setState({
-                data: data.data.page.list,
-                currPage: data.data.page.currPage,
-                totalCount: data.data.page.totalCount,
-                countAllData: data.data.page.totalCount,
-                AllButton: 0
-            })
+        if(this.state.calendarTime == '请选择时间'){
+            message.error('请选择需要查询的时间')
         }else{
-            message.error(data.msg)
+            queryData.Time = this.Time(this.state.calendarTime)
+            queryData.LC = this.state.SelectValue
+            queryData.pageNumber = 1
+            console.log(queryData, "queryData")
+            let data = await ALLSINGLE(queryData)
+            if(data.msg == '成功'){
+                this.setState({
+                    data: data.data.page.list,
+                    currPage: data.data.page.currPage,
+                    totalCount: data.data.page.totalCount,
+                    countAllData: data.data.page.totalCount,
+                    AllButton: 0
+                })
+            }else{
+                message.error(data.msg)
+            }
         }
+        
         
     }
     p(s) {
@@ -702,6 +708,13 @@ class JHLSFX extends React.Component {
     error = (val) => {
         message.error(val);
     }
-
+    Time(val) {
+        let Array = val.split("-")
+        let str = ''
+        for (var i = 0; i < Array.length; i++) {
+            str += Array[i]
+        }
+        return str
+    }
 }
 export default JHLSFX
