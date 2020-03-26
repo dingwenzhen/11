@@ -25,7 +25,7 @@ export const UpdaterulesApi = ({ ...val }) => http.post(`${window.apiUrl}/review
     'srcTabNameCn': val.srcTabNameCn,
     'srcTabNameEn': val.srcTabNameEn,
     'tarColName': val.tarColName,
-    'level': val.ruleImp,
+    'level': val.level,
     'standardType': val.standardType,
     'ruleType': val.ruleType
 })

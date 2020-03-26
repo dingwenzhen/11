@@ -50,12 +50,6 @@ class Home extends Component {
                 ruleImp: ""
             },
             modifyData:{
-                ruleSeq: "",
-                ruleDesc: "",
-                srcTabNameCn: "",
-                srcTabNameEn: "",
-                tarColName: "",
-                ruleImp: ""
             }
         }
     }
@@ -295,7 +289,7 @@ class Home extends Component {
                         <div>
                             <span>规则级别：</span>
                             <Input
-                                value={this.state.modifyData.ruleImp}
+                                value={this.state.modifyData.level}
                                 type="text"
                                 style={{ width: '200px' }}
                                 onChange={this.ruleImpChange.bind(this)}
@@ -435,7 +429,7 @@ class Home extends Component {
     // 规则级别
     ruleImpChange(e) {
         let modifyData = this.state.modifyData
-        modifyData.ruleImp = e.target.value
+        modifyData.level = e.target.value
         this.setState({
             modifyData
         })
